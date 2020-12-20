@@ -6,20 +6,20 @@
  * Time: 12:27
  */
 
-namespace Nucarf\NucarfRpc\Server;
-
-error_reporting(E_ALL);
-
-define('THRIFT_ROOT', __DIR__);
-echo __DIR__;exit;
-require_once  THRIFT_ROOT.'/Thrift/ClassLoader/ThriftClassLoader.php';
-require_once __DIR__ . '/vendor/autoload.php';
-
-use Thrift\ClassLoader\ThriftClassLoader;
-
-$loader = new ThriftClassLoader();
-$loader->registerNamespace('Thrift', THRIFT_ROOT);
-$loader->register();
+namespace Nucarf\NucarfRpc\Service;
+//
+//error_reporting(E_ALL);
+//
+//define('THRIFT_ROOT', __DIR__);
+//echo __DIR__;exit;
+//require_once  THRIFT_ROOT.'/Thrift/ClassLoader/ThriftClassLoader.php';
+//require_once __DIR__ . '/vendor/autoload.php';
+//
+//use Thrift\ClassLoader\ThriftClassLoader;
+//
+//$loader = new ThriftClassLoader();
+//$loader->registerNamespace('Thrift', THRIFT_ROOT);
+//$loader->register();
 
 
 use Thrift\Exception\TException;
@@ -35,10 +35,13 @@ use Thrift\server\TSwooleServerTransport;
 use Thrift\server\TSwooleServer;
 use Thrift\Transport\TSocket;
 use Nucarf\NucarfRpc\Impl\Tag;
-use Goods\Rpc\Attr\HelloWorldProcessor;
-use Goods\Rpc\Tag\TagServiceProcessor;
+//use Goods\Rpc\Attr\HelloWorldProcessor;
+//use Goods\Rpc\Tag\TagServiceProcessor;
 
 class Service
 {
-
+    public function handle()
+    {
+        dd('fsdf');
+    }
 }
