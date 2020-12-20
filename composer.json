@@ -1,0 +1,22 @@
+{
+    "name": "nucarf/nucarf-rpc",
+    "description": "Nucarf PHP RPC Client and Server",
+    "authors": [
+        {
+            "name": "lihongwei",
+            "email": "lihongwei@nucarf.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "nucarf/php-thrift": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nucarf\\NucarfRpc\\": "src/NucarfRpc/"
+        },
+        "files": [
+            "src/NucarfRpc/functions.php"
+        ]
+    }
+}
