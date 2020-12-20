@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Nucarf\\NucarfRpc\\": "src/NucarfRpc/"
+            "Nucarf\\NucarfRpc\\": "src/rpc/"
         },
         "files": [
             "src/NucarfRpc/functions.php"
