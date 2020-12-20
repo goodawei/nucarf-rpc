@@ -7,19 +7,10 @@
  */
 
 namespace Nucarf\NucarfRpc\Service;
-//
-//error_reporting(E_ALL);
-//
-//define('THRIFT_ROOT', __DIR__);
-//echo __DIR__;exit;
-//require_once  THRIFT_ROOT.'/Thrift/ClassLoader/ThriftClassLoader.php';
-//require_once __DIR__ . '/vendor/autoload.php';
-//
-//use Thrift\ClassLoader\ThriftClassLoader;
-//
-//$loader = new ThriftClassLoader();
-//$loader->registerNamespace('Thrift', THRIFT_ROOT);
-//$loader->register();
+
+use Thrift\ClassLoader\ThriftClassLoader;
+$loader = new ThriftClassLoader();
+$loader->register();
 
 
 use Thrift\Exception\TException;
@@ -34,14 +25,41 @@ use Thrift\Protocol\TBinaryProtocol;
 use Thrift\server\TSwooleServerTransport;
 use Thrift\server\TSwooleServer;
 use Thrift\Transport\TSocket;
-use Nucarf\NucarfRpc\Impl\Tag;
-//use Goods\Rpc\Attr\HelloWorldProcessor;
-//use Goods\Rpc\Tag\TagServiceProcessor;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\AttrController;
+use Goods\Rpc\Attr\HelloWorldProcessor;
+use Goods\Rpc\Tag\TagServiceProcessor;
+
 
 class Service
 {
     public function handle()
     {
-        dd('fsdf');
+        try {
+            $hosts = "192.168.10.10";  // 服务端对外IP地址
+            $port = 9999;// 服务端对外端口
+
+            $tThrift = new TTransportFactory();
+            $bThrift = new TBinaryProtocolFactory();
+            $processor = new TMultiplexedProcessor();
+
+            $processor->registerProcessor('HelloWorldIf', new HelloWorldProcessor(new AttrController())); // 注意：OrderServiceIf -- servername需和客户端一致
+            $processor->registerProcessor('TagServiceIf', new TagServiceProcessor(new TagController())); // 注意：OrderServiceIf -- servername需和客户端一致
+            $setting = [
+                'daemonize' => false,
+                'worker_num' => 2,
+                'http_server_port' => 9998,
+                'http_server_host' => $hosts,
+                'log_file' => storage_path('/logs/swoole.log'),
+                'pid_file' => storage_path('/logs/thrift.pid'),
+            ];
+
+            $socket = new TSwooleServerTransport($hosts, $port, $setting);
+            $server = new TSwooleServer($processor, $socket, $tThrift, $tThrift, $bThrift, $bThrift);
+            $server->serve();
+        } catch (TException $tx) {
+            print 'TException: '.$tx->getMessage()."\n";
+        }
     }
 }
+
