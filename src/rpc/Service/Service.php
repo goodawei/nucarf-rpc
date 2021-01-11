@@ -17,19 +17,8 @@ use Thrift\Exception\TException;
 use Thrift\Factory\TTransportFactory;
 use Thrift\Factory\TBinaryProtocolFactory;
 use Thrift\TMultiplexedProcessor;
-use Thrift\Server\TServerSocket;
-use Thrift\Server\TSimpleServer;
-use Thrift\Transport\TBufferedTransport;
-use Thrift\Transport\TPhpStream;
-use Thrift\Protocol\TBinaryProtocol;
 use Thrift\server\TSwooleServerTransport;
 use Thrift\server\TSwooleServer;
-use Thrift\Transport\TSocket;
-use App\Http\Controllers\TagController;
-use App\Http\Controllers\AttrController;
-use Goods\Rpc\Attr\HelloWorldProcessor;
-use Goods\Rpc\Tag\TagServiceProcessor;
-
 
 class Service
 {
@@ -43,8 +32,22 @@ class Service
             $bThrift = new TBinaryProtocolFactory();
             $processor = new TMultiplexedProcessor();
 
-            $processor->registerProcessor('HelloWorldIf', new HelloWorldProcessor(new AttrController())); // 注意：OrderServiceIf -- servername需和客户端一致
-            $processor->registerProcessor('TagServiceIf', new TagServiceProcessor(new TagController())); // 注意：OrderServiceIf -- servername需和客户端一致
+            $services = config('rpc');
+
+            foreach ($services as $service) {
+                $reflexImpl = new \ReflectionClass($service);
+                $reflexName = $reflexImpl->getShortName();
+
+                $cla = "\Goods\Rpc\\tag\\" . $reflexName . "Processor";
+
+                $impmCla =  "\App\ServiceImpl\\" . $reflexName;
+
+                $processorItem = new $cla(new $impmCla());
+
+                $processor->registerProcessor($reflexName.'If',$processorItem);
+            }
+//            $processor->registerProcessor('HelloWorldIf', new HelloWorldProcessor(new AttrController())); // 注意：OrderServiceIf -- servername需和客户端一致
+//            $processor->registerProcessor('TagServiceIf', new TagServiceProcessor(new TagController())); // 注意：OrderServiceIf -- servername需和客户端一致
             $setting = [
                 'daemonize' => false,
                 'worker_num' => 2,
