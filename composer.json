@@ -1,6 +1,7 @@
 {
     "name": "nucarf/nucarf-rpc",
     "description": "Nucarf PHP RPC Client and Server",
+    "version": "0.1.0",
     "authors": [
         {
             "name": "lihongwei",
@@ -9,7 +10,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "nucarf/php-thrift": "dev-master"
+        "nucarf/php-thrift": "0.1.0"
     },
     "autoload": {
         "psr-4": {
